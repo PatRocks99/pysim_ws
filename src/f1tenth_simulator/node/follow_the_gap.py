@@ -14,7 +14,7 @@ class FollowTheGap:
         self.lidar_fov = 0.69
 
         # Get topic names
-        drive_topic = rospy.get_param("~gap_drive_topic", "/ackermann_cmd")
+        drive_topic = rospy.get_param("~gap_drive_topic", "/drive")
         odom_topic = rospy.get_param("~odom_topic", "/odom")
         scan_topic = rospy.get_param("~scan_topic", "/scan")
 
@@ -25,7 +25,7 @@ class FollowTheGap:
         #self.odom_sub = rospy.Subscriber(odom_topic, Odometry, self.odom_callback)
 
         # Start a subscriber to listen to laser scan messages
-        self.laser_sub = rospy.Subscriber(scan_topic, LaserScan, self.laser_callback)
+        self.laser_sub = rospy.Subscriber(scan_topic, LaserScan, self.lidar_callback)
 
     #def odom_callback(self, msg):
         #pass
@@ -100,16 +100,18 @@ class FollowTheGap:
     def lidar_callback(self, data):
         """ Process each LiDAR scan as per the Follow Gap algorithm & publish an AckermannDriveStamped Message
         """
+        ranges = data.ranges 
         #added to handle 270 degree scan
+
         cut_points = int((data.angle_max - self.lidar_fov)/data.angle_increment)
         ranges=ranges[cut_points:-cut_points]
 
-        ranges = data.ranges 
+        
         proc_ranges = self.preprocess_lidar(ranges)
         gap_start, gap_end = self.find_max_gap(proc_ranges)
         best_point = (gap_start+gap_end)/2
         speed = min(2 + max(proc_ranges)/6, 3.25)
-        steering_angle = (data.angle_min + data.angle_increment * best_point)*(1.5/speed)
+        steering_angle = (best_point+cut_points)*data.angle_increment + data.angle_min    #(data.angle_min + data.angle_increment * best_point)*(1.5/speed)
         
         self.pub_drive(speed, steering_angle)
 

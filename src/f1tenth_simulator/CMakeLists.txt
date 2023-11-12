@@ -40,6 +40,11 @@ install(DIRECTORY include/${PROJECT_NAME}
 # ROS >
 ######################################
 
+#install Install Python Exacutables
+#install(PROGRAMS
+#  node/follow_the_gap.py 
+#  DESTINATION lib)
+
 # Only run this code in the catkin environment
 if(DEFINED CATKIN_DEVEL_PREFIX)
   find_package(catkin REQUIRED COMPONENTS
