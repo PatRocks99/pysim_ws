@@ -11,6 +11,8 @@ import numpy as np
 class FollowTheGap:
     def __init__(self):
         rospy.init_node("follow_the_gap")
+
+        #set the field of view for your lidar
         self.lidar_fov = 0.69
 
         # Get topic names
@@ -30,37 +32,17 @@ class FollowTheGap:
     #def odom_callback(self, msg):
         #pass
     def preprocess_lidar(self, ranges, window_size=15, max_value=10, avoid = 50):
-        """ Preprocess the LiDAR scan array.
+        """ Preprocess the LiDAR scan array. Not required for this homework as the sim lidar data does not have noise
         Args:
             ranges (List[float]): A list of ranges from the LiDAR scan.
             window_size (int): The size of the window for calculating the mean.
             max_value (float): The maximum value to reject.
         Returns:
             List[float]: The preprocessed LiDAR scan array.
+
         """
-        ranges = list(ranges)
-        # Check if the range list is empty
-        if not ranges:
-            return []
-        minima = min(ranges)
-        preprocessed_ranges = []
-        # Iterate over the ranges
-        for i in range(len(ranges)):
-            if ranges[i] == minima:
-                #create an avoidance of anything near minimum distance
-                for j in range(avoid):
-                    ranges[min(max(0,i-(avoid/2)+j),len(ranges)-1)] = 0.0
-
-            # Calculate the start and end indices of the window
-            start = max(0, i - window_size // 2)
-            end = min(len(ranges), i + window_size // 2 + 1)
-
-            # Extract the values within the window
-            window = ranges[start:end]
-
-            # Calculate the mean of the values within the window disregarding large values
-            mean_value = np.mean(window[ranges<max_value]) #! disregrads any number greater than max_value
-            preprocessed_ranges.append(mean_value)
+        preprocessed_ranges = ranges
+        
         return preprocessed_ranges
     
     def find_max_gap(self, free_space_ranges, max = 2):
@@ -71,29 +53,6 @@ class FollowTheGap:
         max_gap_length = 0
         
 
-        gap_start = None
-        gap_end = None
-        for i in range(len(free_space_ranges)):
-            if free_space_ranges[i] > max/2:  #! Make this adaptive at some point 1/2 the max length perhaps
-                if gap_start is None:
-                    gap_start = i
-                else:
-                    gap_end = i
-            else:
-                if gap_start is not None and gap_end is not None:
-                    gap_length = gap_end - gap_start
-                    if gap_length > max_gap_length:
-                        max_gap_length = gap_length
-                        max_gap_start = gap_start
-                        max_gap_end = gap_end
-                    gap_start = None
-                    gap_end = None
-        if gap_start is not None and gap_end is not None:
-            gap_length = gap_end - gap_start
-            if gap_length > max_gap_length:
-                max_gap_length = gap_length
-                max_gap_start = gap_start
-                max_gap_end = gap_end
 
         return max_gap_start, max_gap_end
 

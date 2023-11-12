@@ -93,15 +93,19 @@ public:
         // initialize mux controller
         mux_controller.reserve(mux_size);
         prev_mux.reserve(mux_size);
-        for (int i = 0; i < mux_size; i++) {
-            if (i == 5){
-                mux_controller[i] = true;
-            }
-            mux_controller[i] = false;
-            prev_mux[i] = false;
-            // Could I activate the mux here after it is initalized
+        for (int i = 0; i< mux_size; i++){
+            mux_controller[i] = flase;
+            prev_mux[i]= flase;
         }
-        mux_controller[5] = true;
+//       for (int i = 0; i < mux_size; i++) {
+//            if (i == 5){
+//                mux_controller[i] = true;
+//            }
+//            mux_controller[i] = false;
+//            prev_mux[i] = false;
+            // Could I activate the mux here after it is initalized
+//        }
+        //mux_controller[5] = true;
 
         // A channel contains a subscriber to the given drive topic and a publisher to the main drive topic
         channels = std::vector<Channel*>();
@@ -140,7 +144,7 @@ public:
         // n.getParam("new_drive_topic", new_drive_topic);
         // n.getParam("new_mux_idx", new_mux_idx);
         // add_channel(new_drive_topic, drive_topic, new_mux_idx);
-        mux_controller[5] = true;
+        //mux_controller[5] = true;
     }
 
     void add_channel(std::string channel_name, std::string drive_topic, int mux_idx_) {
@@ -193,10 +197,10 @@ public:
         }
         if (!anything_on) {
             // if no mux channel is active, halt the car
-            //publish_to_drive(0.0, 0.0);
+            publish_to_drive(0.0, 0.0);
             //adding to start the follow the gap so that automaticaly on lanch it is active
-            mux_controller[5] = true;
-            std::cout << mux_controller[5] << std::endl;
+            //mux_controller[5] = true;
+            //std::cout << mux_controller[5] << std::endl;
         }
     }
 
