@@ -107,10 +107,10 @@ class FollowTheGap:
         ranges=ranges[cut_points:-cut_points]
 
         
-        proc_ranges = self.preprocess_lidar(ranges)
-        gap_start, gap_end = self.find_max_gap(proc_ranges)
+        #proc_ranges = self.preprocess_lidar(ranges)
+        gap_start, gap_end = self.find_max_gap(ranges)
         best_point = (gap_start+gap_end)/2
-        speed = min(2 + max(proc_ranges)/6, 3.25)
+        speed = min(2 + max(ranges)/6, 3.25)
         steering_angle = (best_point+cut_points)*data.angle_increment + data.angle_min    #(data.angle_min + data.angle_increment * best_point)*(1.5/speed)
         
         self.pub_drive(speed, steering_angle)
