@@ -61,16 +61,8 @@ class FollowTheGap:
         """
         ranges = data.ranges 
         #added to handle 270 degree scan
-
-        cut_points = int((data.angle_max - self.lidar_fov)/data.angle_increment)
-        ranges=ranges[cut_points:-cut_points]
-
-        
-        proc_ranges = self.preprocess_lidar(ranges)
-        gap_start, gap_end = self.find_max_gap(proc_ranges)
-        best_point = (gap_start+gap_end)/2
-        speed = min(2 + max(proc_ranges)/6, 3.25)
-        steering_angle = (best_point+cut_points)*data.angle_increment + data.angle_min    #(data.angle_min + data.angle_increment * best_point)*(1.5/speed)
+        speed = 1
+        steering_angle = 0
         
         self.pub_drive(speed, steering_angle)
 
