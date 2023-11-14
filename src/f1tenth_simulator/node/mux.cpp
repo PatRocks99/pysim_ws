@@ -66,8 +66,9 @@ public:
         // Make a publisher for drive messages
         drive_pub = n.advertise<ackermann_msgs::AckermannDriveStamped>(drive_topic, 10);
 
-        // Start a subscriber to listen to mux messages: mux_sub = n.subscribe(mux_topic, 1, &Mux::mux_callback, this);
-        mux_sub = n.subscribe(mux_topic, 5, &Mux::mux_callback, this);
+        // Start a subscriber to listen to mux messages: 
+        mux_sub = n.subscribe(mux_topic, 1, &Mux::mux_callback, this);
+        //mux_sub = n.subscribe(mux_topic, 5, &Mux::mux_callback, this);
 
         // Start subscribers to listen to joy and keyboard messages
         joy_sub = n.subscribe(joy_topic, 1, &Mux::joy_callback, this);
@@ -93,15 +94,19 @@ public:
         // initialize mux controller
         mux_controller.reserve(mux_size);
         prev_mux.reserve(mux_size);
-        for (int i = 0; i < mux_size; i++) {
-            if (i == 5){
-                mux_controller[i] = true;
-            }
+        for(int i = 0; i<muxsize; i++){
             mux_controller[i] = false;
             prev_mux[i] = false;
-            // Could I activate the mux here after it is initalized
         }
-        mux_controller[5] = true;
+//        for (int i = 0; i < mux_size; i++) {
+//            if (i == 5){
+//                mux_controller[i] = true;
+//            }
+//            mux_controller[i] = false;
+//            prev_mux[i] = false;
+            // Could I activate the mux here after it is initalized
+//       }
+        //mux_controller[5] = true;
 
         // A channel contains a subscriber to the given drive topic and a publisher to the main drive topic
         channels = std::vector<Channel*>();
@@ -193,10 +198,10 @@ public:
         }
         if (!anything_on) {
             // if no mux channel is active, halt the car
-            //publish_to_drive(0.0, 0.0);
+            publish_to_drive(0.0, 0.0);
             //adding to start the follow the gap so that automaticaly on lanch it is active
-            mux_controller[5] = true;
-            std::cout << mux_controller[5] << std::endl;
+            //mux_controller[5] = true;
+            //std::cout << mux_controller[5] << std::endl;
         }
     }
 
