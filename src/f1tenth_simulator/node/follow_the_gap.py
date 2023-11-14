@@ -14,7 +14,7 @@ class FollowTheGap:
         self.lidar_fov = 0.69
 
         # Get topic names
-        drive_topic = rospy.get_param("~gap_drive_topic", "/drive")
+        drive_topic = rospy.get_param("~gap_drive_topic", "/gap_drive")
         odom_topic = rospy.get_param("~odom_topic", "/odom")
         scan_topic = rospy.get_param("~scan_topic", "/scan")
 
